@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Números Primos: Los Átomos de las Matemáticas</title>
+    <meta name="description" content="Explora el fascinante mundo de los números primos: qué son, su historia, y cómo protegen tu información en internet.">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-elevated: #1a1a25;
+            --prime-gold: #ffd700;
+            --prime-glow: #ffed4a;
+            --composite-dim: #2a2a3a;
+            --text-primary: #f0f0f5;
+            --text-secondary: #9090a8;
+            --accent-blue: #4a9eff;
+            --accent-purple: #a855f7;
+            --accent-cyan: #22d3ee;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(74, 158, 255, 0.04) 0%, transparent 45%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 0 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-icon {
+            font-size: 5rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.3));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+
+        h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(2.2rem, 6vw, 3.8rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--prime-gold), var(--warning), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.75rem;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            font-weight: 300;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .subtitle strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .tabs-wrapper {
+            position: sticky;
+            top: 0;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            padding: 1rem 0;
+            margin: 0 -2rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .tab {
+            padding: 0.7rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            color: var(--text-secondary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .tab:hover {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--prime-gold), var(--warning));
+            color: var(--bg-deep);
+            border-color: var(--prime-gold);
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .tab-icon {
+            font-size: 1rem;
+        }
+
+        .section {
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .card.featured {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(168, 85, 247, 0.05));
+            border-color: rgba(255, 215, 0, 0.2);
+        }
+
+        .card h2 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .card h2 .icon {
+            font-size: 1.6rem;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .highlight {
+            color: var(--prime-gold);
+            font-weight: 600;
+        }
+
+        .highlight-blue {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .highlight-purple {
+            color: var(--accent-purple);
+            font-weight: 600;
+        }
+
+        /* Glossary tooltip */
+        .term {
+            color: var(--accent-cyan);
+            cursor: help;
+            border-bottom: 1px dashed var(--accent-cyan);
+            position: relative;
+        }
+
+        .term:hover::after {
+            content: attr(data-def);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-elevated);
+            border: 1px solid var(--accent-cyan);
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            width: max-content;
+            max-width: 280px;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            white-space: normal;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .term:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 8px solid transparent;
+            border-top-color: var(--accent-cyan);
+            margin-bottom: -8px;
+        }
+
+        .math-box {
+            background: var(--bg-elevated);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            font-family: 'Space Mono', monospace;
+            text-align: center;
+            border-left: 4px solid var(--prime-gold);
+        }
+
+        .math-box .equation {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .math-box .caption {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .analogy-box {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(74, 158, 255, 0.05));
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .analogy-box h4 {
+            color: var(--accent-cyan);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .analogy-box p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+
+        .primes-showcase {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            padding: 1.5rem;
+            background: var(--bg-elevated);
+            border-radius: 16px;
+            margin: 1.5rem 0;
+        }
+
+        .prime-badge {
+            background: linear-gradient(135deg, var(--prime-gold), var(--warning));
+            color: var(--bg-deep);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .prime-badge:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn {
+            padding: 0.9rem 1.8rem;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--prime-gold), var(--warning));
+            color: var(--bg-deep);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.35);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: var(--composite-dim);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* Sieve styles */
+        .sieve-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            background: var(--bg-elevated);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+        }
+
+        .speed-control input[type="range"] {
+            width: 100px;
+            accent-color: var(--prime-gold);
+            cursor: pointer;
+        }
+
+        .sieve-status {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-family: 'Space Mono', monospace;
+            color: var(--text-secondary);
+            padding: 1rem;
+            background: var(--bg-elevated);
+            border-radius: 10px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sieve-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 6px;
+            margin-bottom: 1.5rem;
+        }
+
+        .sieve-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-elevated);
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(0.7rem, 2.5vw, 1rem);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: default;
+            border: 2px solid transparent;
+        }
+
+        .sieve-cell.prime {
+            background: linear-gradient(135deg, var(--prime-gold), var(--warning));
+            color: var(--bg-deep);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .sieve-cell.composite {
+            background: var(--composite-dim);
+            color: var(--text-secondary);
+            opacity: 0.4;
+        }
+
+        .sieve-cell.current-prime {
+            background: var(--accent-purple);
+            color: white;
+            transform: scale(1.15);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+            z-index: 10;
+        }
+
+        .sieve-cell.marking {
+            background: var(--danger);
+            color: white;
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        .sieve-legend {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            padding: 1.25rem;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+        }
+
+        .legend-color.prime { background: linear-gradient(135deg, var(--prime-gold), var(--warning)); }
+        .legend-color.composite { background: var(--composite-dim); opacity: 0.4; }
+        .legend-color.checking { background: var(--accent-purple); }
+
+        /* Ulam Spiral - FIXED */
+        .ulam-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .ulam-controls {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .ulam-wrapper {
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #1a1a25;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .ulam-canvas {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            border-radius: 8px;
+        }
+
+        .ulam-info {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-elevated);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* Ulam construction diagram */
+        .ulam-diagram {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--prime-gold);
+            overflow-x: auto;
+        }
+
+        .spiral-table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.95rem;
+        }
+
+        .spiral-table td {
+            width: 32px;
+            height: 28px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .spiral-table td.prime {
+            color: var(--prime-gold);
+            font-weight: 700;
+        }
+
+        .spiral-table td.center {
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        .spiral-table td.arrow {
+            color: var(--text-secondary);
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+
+        .diagram-caption {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Prime Checker */
+        .checker-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 1.1rem 1.5rem;
+            background: var(--bg-elevated);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--prime-gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+        }
+
+        .result-display {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-elevated);
+            border-radius: 20px;
+            min-width: 320px;
+            max-width: 100%;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+        }
+
+        .result-display.is-prime {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 170, 0, 0.05));
+            border-color: var(--prime-gold);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+        }
+
+        .result-display.not-prime {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(74, 158, 255, 0.05));
+            border-color: var(--accent-purple);
+        }
+
+        .result-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+
+        .result-display.is-prime .result-number { color: var(--prime-gold); }
+        .result-display.not-prime .result-number { color: var(--accent-purple); }
+
+        .result-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-explanation {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .factorization {
+            font-family: 'Space Mono', monospace;
+            color: var(--prime-gold);
+            font-size: 1.1rem;
+            margin-top: 0.75rem;
+        }
+
+        .factorization sup {
+            font-size: 0.7em;
+            color: var(--accent-cyan);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2.5rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--prime-gold), var(--accent-purple), var(--accent-blue), var(--success));
+            border-radius: 4px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 1.75rem;
+            margin-bottom: 1.5rem;
+            background: var(--bg-elevated);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(8px);
+            border-color: rgba(255, 215, 0, 0.2);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.85rem;
+            top: 2rem;
+            width: 18px;
+            height: 18px;
+            background: var(--prime-gold);
+            border-radius: 50%;
+            border: 4px solid var(--bg-deep);
+        }
+
+        .timeline-date {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--prime-gold);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .timeline-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .timeline-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Crypto Section */
+        .crypto-visual {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+
+        .key-box {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 3px solid;
+            min-width: 160px;
+            transition: transform 0.3s ease;
+        }
+
+        .key-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .key-box.public {
+            border-color: var(--success);
+        }
+
+        .key-box.private {
+            border-color: var(--danger);
+        }
+
+        .key-icon {
+            font-size: 3.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .key-label {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .key-box.public .key-label { color: var(--success); }
+        .key-box.private .key-label { color: var(--danger); }
+
+        .key-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 0.75rem;
+            line-height: 1.5;
+        }
+
+        /* RSA Exercise */
+        .rsa-exercise {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(74, 158, 255, 0.05));
+            border: 2px solid rgba(168, 85, 247, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .rsa-exercise h3 {
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .rsa-step {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .rsa-step h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .rsa-step p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .rsa-inputs {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 0.75rem;
+        }
+
+        .rsa-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .rsa-input-group label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .rsa-input-group input, .rsa-input-group select {
+            padding: 0.6rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            width: 100px;
+        }
+
+        .rsa-input-group input:focus, .rsa-input-group select:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+
+        .rsa-result {
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: 'Space Mono', monospace;
+            text-align: center;
+        }
+
+        .rsa-result .value {
+            font-size: 1.5rem;
+            color: var(--prime-gold);
+            font-weight: 700;
+        }
+
+        .rsa-result .label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .rsa-message-demo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .rsa-message-box {
+            background: var(--bg-card);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .rsa-message-box .msg-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .rsa-message-box .msg-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .rsa-message-box.original .msg-value { color: var(--success); }
+        .rsa-message-box.encrypted .msg-value { color: var(--danger); }
+        .rsa-message-box.decrypted .msg-value { color: var(--accent-cyan); }
+
+        .rsa-arrow {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+        }
+
+        /* Simplified RSA Keys */
+        .rsa-simple-keys {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .simple-key {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 2px solid;
+            min-width: 200px;
+        }
+
+        .simple-key.public {
+            border-color: var(--success);
+        }
+
+        .simple-key.private {
+            border-color: var(--danger);
+        }
+
+        .simple-key-icon {
+            font-size: 2rem;
+        }
+
+        .simple-key-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .simple-key-content strong {
+            font-size: 0.9rem;
+        }
+
+        .simple-key.public .simple-key-content strong {
+            color: var(--success);
+        }
+
+        .simple-key.private .simple-key-content strong {
+            color: var(--danger);
+        }
+
+        .simple-key-content span {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--prime-gold);
+        }
+
+        .simple-key-content small {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Quiz CTA */
+        .quiz-cta {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(74, 158, 255, 0.1));
+            border: 2px solid rgba(168, 85, 247, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .quiz-cta h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .quiz-cta p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .quiz-cta .btn {
+            font-size: 1.1rem;
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+        }
+
+        /* Ulam button states */
+        .ulam-btn.active {
+            background: linear-gradient(135deg, var(--prime-gold), var(--warning)) !important;
+            color: var(--bg-deep) !important;
+        }
+
+        /* Glossary */
+        .glossary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .glossary-item {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border-left: 4px solid var(--accent-cyan);
+        }
+
+        .glossary-item h4 {
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .glossary-item p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Fact cards */
+        .fact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .fact-card {
+            background: var(--bg-elevated);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border-left: 4px solid var(--accent-purple);
+            transition: all 0.3s ease;
+        }
+
+        .fact-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .fact-card:nth-child(2) { border-left-color: var(--accent-blue); }
+        .fact-card:nth-child(3) { border-left-color: var(--success); }
+        .fact-card:nth-child(4) { border-left-color: var(--warning); }
+
+        .fact-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .fact-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .app-card {
+            background: var(--bg-elevated);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border-left: 4px solid var(--prime-gold);
+            transition: all 0.3s ease;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .app-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .app-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 4rem 0 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 3rem;
+        }
+
+        footer .logo-small {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            header { padding: 2.5rem 0 2rem; }
+            .tabs-wrapper { margin: 0 -1rem 1.5rem; }
+            .tabs { padding: 0 0.5rem; gap: 0.3rem; }
+            .tab { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
+            .tab-icon { display: none; }
+            .card { padding: 1.5rem; border-radius: 18px; }
+            .sieve-grid { gap: 4px; }
+            .sieve-cell { border-radius: 5px; }
+            .result-number { font-size: 2rem; }
+            .rsa-inputs { flex-direction: column; align-items: stretch; }
+            .rsa-input-group input { width: 100%; }
+            .term:hover::after { 
+                left: 0; 
+                transform: none; 
+                max-width: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sieve-cell { font-size: 0.6rem; border-radius: 4px; }
+            .input-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo-icon">🔢</div>
+            </div>
+            <h1>Números Primos</h1>
+            <p class="subtitle">Descubre los <strong>"átomos" de las matemáticas</strong> que protegen tus secretos digitales</p>
+        </header>
+
+        <div class="tabs-wrapper">
+            <nav class="tabs">
+                <button class="tab active" data-section="intro">
+                    <span class="tab-icon">💡</span> ¿Qué son?
+                </button>
+                <button class="tab" data-section="sieve">
+                    <span class="tab-icon">🔍</span> Criba Visual
+                </button>
+                <button class="tab" data-section="ulam">
+                    <span class="tab-icon">🌀</span> Espiral de Ulam
+                </button>
+                <button class="tab" data-section="checker">
+                    <span class="tab-icon">🧮</span> Verificador
+                </button>
+                <button class="tab" data-section="history">
+                    <span class="tab-icon">📜</span> Historia
+                </button>
+                <button class="tab" data-section="crypto">
+                    <span class="tab-icon">🔐</span> Criptografía
+                </button>
+                <button class="tab" data-section="glossary">
+                    <span class="tab-icon">📖</span> Glosario
+                </button>
+            </nav>
+        </div>
+
+        <!-- ==================== INTRODUCCIÓN ==================== -->
+        <section id="intro" class="section active">
+            <div class="card featured">
+                <h2><span class="icon">💡</span> ¿Qué es un número primo?</h2>
+                <p>
+                    Un <span class="highlight">número primo</span> es un número natural mayor que 1 que <strong>únicamente puede dividirse de forma exacta entre 1 y sí mismo</strong>.
+                </p>
+                <div class="analogy-box">
+                    <h4>🧱 La analogía de los ladrillos</h4>
+                    <p>
+                        Imagina que los números son construcciones de LEGO. Los <strong>números primos</strong> son las piezas básicas que no puedes desarmar más. Con ellas, puedes construir cualquier otro número (los "<span class="term" data-def="Número que tiene más de dos divisores. Por ejemplo, 12 es compuesto porque se divide entre 1, 2, 3, 4, 6 y 12.">compuestos</span>"), pero las piezas primas son indivisibles.
+                    </p>
+                </div>
+                <p>
+                    Por ejemplo: el <span class="highlight">7</span> es primo porque solo puedes dividirlo entre 1 y 7. Pero el <span class="highlight-purple">12</span> no es primo porque puedes dividirlo entre 2, 3, 4 y 6.
+                </p>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">🏗️</span> Los ladrillos fundamentales</h2>
+                <p>
+                    Cualquier número entero mayor que 1 puede escribirse como un producto de primos. A esto se le llama <span class="term" data-def="Proceso de expresar un número como multiplicación de números primos. Es única para cada número (Teorema Fundamental de la Aritmética).">factorización prima</span>, y es única para cada número:
+                </p>
+                <div class="math-box">
+                    <div class="equation">12 = 2² × 3</div>
+                    <div class="equation">100 = 2² × 5²</div>
+                    <div class="equation">2025 = 3⁴ × 5²</div>
+                    <div class="caption">Cada número tiene una única "receta" de primos</div>
+                </div>
+                <p>
+                    El <span class="term" data-def="Establece que todo número entero mayor que 1 se puede representar como un producto de primos de manera única (sin importar el orden).">Teorema Fundamental de la Aritmética</span> garantiza que esta descomposición es única. Por eso los matemáticos llaman a los primos los <span class="highlight">"átomos" de las matemáticas</span>.
+                </p>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">⭐</span> Los primeros 25 números primos</h2>
+                <p>Estos son los primos menores que 100:</p>
+                <div class="primes-showcase">
+                    <span class="prime-badge">2</span>
+                    <span class="prime-badge">3</span>
+                    <span class="prime-badge">5</span>
+                    <span class="prime-badge">7</span>
+                    <span class="prime-badge">11</span>
+                    <span class="prime-badge">13</span>
+                    <span class="prime-badge">17</span>
+                    <span class="prime-badge">19</span>
+                    <span class="prime-badge">23</span>
+                    <span class="prime-badge">29</span>
+                    <span class="prime-badge">31</span>
+                    <span class="prime-badge">37</span>
+                    <span class="prime-badge">41</span>
+                    <span class="prime-badge">43</span>
+                    <span class="prime-badge">47</span>
+                    <span class="prime-badge">53</span>
+                    <span class="prime-badge">59</span>
+                    <span class="prime-badge">61</span>
+                    <span class="prime-badge">67</span>
+                    <span class="prime-badge">71</span>
+                    <span class="prime-badge">73</span>
+                    <span class="prime-badge">79</span>
+                    <span class="prime-badge">83</span>
+                    <span class="prime-badge">89</span>
+                    <span class="prime-badge">97</span>
+                </div>
+                <div class="analogy-box">
+                    <h4>🎯 Dato importante</h4>
+                    <p>
+                        El <strong>2 es el único número primo par</strong>. Todos los demás números pares son <span class="term" data-def="Se dice que un número es divisible entre otro cuando la división es exacta (residuo cero).">divisibles</span> entre 2, por lo que no pueden ser primos.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">♾️</span> ¿Cuántos primos existen?</h2>
+                <p>
+                    <strong>¡Infinitos!</strong> Hace más de 2,300 años, el matemático griego <span class="highlight">Euclides</span> demostró que no importa cuántos primos conozcas, siempre existirá uno más grande.
+                </p>
+                <p>
+                    Su demostración es elegante: si multiplicas todos los primos conocidos y sumas 1, obtienes un número que no es divisible por ninguno de ellos... lo que significa que debe existir un primo nuevo.
+                </p>
+                <div class="math-box">
+                    <div class="equation">(2 × 3 × 5 × 7) + 1 = 211</div>
+                    <div class="caption">211 es primo, ¡y no estaba en nuestra lista original!</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== CRIBA DE ERATÓSTENES ==================== -->
+        <section id="sieve" class="section">
+            <div class="card">
+                <h2><span class="icon">🔍</span> La Criba de Eratóstenes</h2>
+                <p>
+                    Este ingenioso método tiene más de <span class="highlight">2,200 años</span> y sigue siendo una de las formas más eficientes de encontrar todos los primos hasta cierto número.
+                </p>
+                <p>
+                    <strong>¿Cómo funciona?</strong> Empezamos con todos los números. Tomamos el primer primo (2) y "tachamos" todos sus <span class="term" data-def="Números que resultan de multiplicar un número por 1, 2, 3, 4... Por ejemplo, los múltiplos de 3 son: 3, 6, 9, 12, 15...">múltiplos</span>. Luego tomamos el siguiente número sin tachar (3) y repetimos. Al final, los que quedan sin tachar son primos.
+                </p>
+            </div>
+
+            <div class="card featured">
+                <h2><span class="icon">▶️</span> Simulación interactiva</h2>
+                <p>Presiona <strong>"Iniciar animación"</strong> para ver el <span class="term" data-def="Conjunto de pasos ordenados para resolver un problema. La Criba de Eratóstenes es un algoritmo para encontrar números primos.">algoritmo</span> en acción:</p>
+                
+                <div class="sieve-controls">
+                    <button class="btn btn-primary" id="startSieve">▶️ Iniciar animación</button>
+                    <button class="btn btn-secondary" id="resetSieve">🔄 Reiniciar</button>
+                    <div class="speed-control">
+                        <label>⚡ Velocidad:</label>
+                        <input type="range" id="speed" min="50" max="500" value="250">
+                    </div>
+                </div>
+
+                <div class="sieve-status" id="sieveStatus">
+                    Presiona "Iniciar animación" para comenzar la demostración
+                </div>
+
+                <div class="sieve-grid" id="sieveGrid"></div>
+
+                <div class="sieve-legend">
+                    <div class="legend-item">
+                        <div class="legend-color prime"></div>
+                        <span>Número primo confirmado</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color composite"></div>
+                        <span>Número compuesto (tachado)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color checking"></div>
+                        <span>Primo actual</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ESPIRAL DE ULAM (FIXED) ==================== -->
+        <section id="ulam" class="section">
+            <div class="card">
+                <h2><span class="icon">🌀</span> La Espiral de Ulam</h2>
+                <p>
+                    En 1963, el matemático <span class="highlight">Stanisław Ulam</span> estaba aburrido en una conferencia y comenzó a dibujar números en espiral. Cuando marcó los primos, descubrió algo sorprendente: <strong>¡formaban patrones diagonales!</strong>
+                </p>
+                <p>
+                    Nadie esperaba que los primos, aparentemente aleatorios, mostraran estructura visual. Este descubrimiento accidental sigue fascinando a matemáticos hoy.
+                </p>
+            </div>
+
+            <div class="card featured">
+                <h2><span class="icon">✨</span> Visualización interactiva</h2>
+                <p>Los puntos <span class="highlight">dorados</span> son números primos. Observa cómo se alinean en diagonales:</p>
+                
+                <div class="ulam-container">
+                    <div class="ulam-controls">
+                        <button class="btn btn-primary ulam-btn active" data-size="41">41×41</button>
+                        <button class="btn btn-secondary ulam-btn" data-size="101">101×101</button>
+                        <button class="btn btn-secondary ulam-btn" data-size="201">201×201</button>
+                        <button class="btn btn-secondary ulam-btn" data-size="301">301×301</button>
+                    </div>
+                    
+                    <div class="ulam-wrapper" id="ulamWrapper">
+                        <canvas id="ulamCanvas" class="ulam-canvas"></canvas>
+                    </div>
+                    
+                    <div class="ulam-info" id="ulamInfo">
+                        Haz clic en un tamaño para generar la espiral
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">🔎</span> ¿Cómo se construye?</h2>
+                <p>La espiral se dibuja así:</p>
+                <ol style="color: var(--text-secondary); margin-left: 1.5rem; margin-bottom: 1rem;">
+                    <li>Se coloca el 1 en el centro</li>
+                    <li>Se avanza en espiral: derecha, arriba, izquierda, abajo...</li>
+                    <li>Se marcan en <span class="highlight">dorado</span> los números primos</li>
+                </ol>
+                <div class="ulam-diagram">
+                    <table class="spiral-table">
+                        <tr>
+                            <td class="prime">17</td>
+                            <td class="arrow">←</td>
+                            <td>16</td>
+                            <td class="arrow">←</td>
+                            <td>15</td>
+                            <td class="arrow">←</td>
+                            <td>14</td>
+                            <td class="arrow">←</td>
+                            <td class="prime">13</td>
+                        </tr>
+                        <tr>
+                            <td class="arrow">↓</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="arrow">↑</td>
+                        </tr>
+                        <tr>
+                            <td>18</td>
+                            <td></td>
+                            <td class="prime">5</td>
+                            <td class="arrow">←</td>
+                            <td>4</td>
+                            <td class="arrow">←</td>
+                            <td class="prime">3</td>
+                            <td></td>
+                            <td>12</td>
+                        </tr>
+                        <tr>
+                            <td class="arrow">↓</td>
+                            <td></td>
+                            <td class="arrow">↓</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="arrow">↑</td>
+                            <td></td>
+                            <td class="arrow">↑</td>
+                        </tr>
+                        <tr>
+                            <td class="prime">19</td>
+                            <td></td>
+                            <td>6</td>
+                            <td></td>
+                            <td class="center">1</td>
+                            <td class="arrow">→</td>
+                            <td class="prime">2</td>
+                            <td></td>
+                            <td class="prime">11</td>
+                        </tr>
+                        <tr>
+                            <td class="arrow">↓</td>
+                            <td></td>
+                            <td class="arrow">↓</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="arrow">↑</td>
+                        </tr>
+                        <tr>
+                            <td>20</td>
+                            <td></td>
+                            <td class="prime">7</td>
+                            <td class="arrow">→</td>
+                            <td>8</td>
+                            <td class="arrow">→</td>
+                            <td>9</td>
+                            <td class="arrow">→</td>
+                            <td>10</td>
+                        </tr>
+                        <tr>
+                            <td class="arrow">↓</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>21</td>
+                            <td class="arrow">→</td>
+                            <td>22</td>
+                            <td class="arrow">→</td>
+                            <td class="prime">23</td>
+                            <td class="arrow">→</td>
+                            <td>...</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <p class="diagram-caption">Los primos (<span class="highlight">2, 3, 5, 7, 11, 13, 17, 19, 23</span>...) tienden a alinearse en diagonales</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">❓</span> ¿Por qué aparecen las diagonales?</h2>
+                <p>
+                    Las diagonales corresponden a <span class="term" data-def="Expresión matemática de la forma ax² + bx + c. Algunos polinomios cuadráticos generan muchos números primos.">polinomios cuadráticos</span> que generan muchos primos. El más famoso es el de Euler:
+                </p>
+                <div class="math-box">
+                    <div class="equation">n² + n + 41</div>
+                    <div class="caption">Genera primos para n = 0, 1, 2, ... hasta 39</div>
+                </div>
+                <p>
+                    Este polinomio produce <span class="highlight">40 primos consecutivos</span>, un récord para polinomios de esta forma. La espiral de Ulam hace visible esta y otras "líneas de primos".
+                </p>
+            </div>
+        </section>
+
+        <!-- ==================== VERIFICADOR (MEJORADO) ==================== -->
+        <section id="checker" class="section">
+            <div class="card featured">
+                <h2><span class="icon">🧮</span> Verificador de Primos</h2>
+                <p>Escribe cualquier número y descubre si es primo. Te explicaremos el porqué.</p>
+                
+                <div class="checker-container">
+                    <div class="input-group">
+                        <input type="number" id="numberInput" placeholder="Escribe un número..." min="1">
+                        <button class="btn btn-primary" id="checkPrime">Verificar</button>
+                    </div>
+
+                    <div class="result-display" id="resultDisplay">
+                        <div class="result-number" id="resultNumber">?</div>
+                        <div class="result-text" id="resultText">Ingresa un número para verificar</div>
+                        <div class="result-explanation" id="resultExplanation"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">🎯</span> Números especiales para probar</h2>
+                <div class="fact-grid">
+                    <div class="fact-card">
+                        <h4>🔢 <span class="term" data-def="Primos de la forma 2ⁿ - 1. Se llaman así por el monje Marin Mersenne que los estudió en el siglo XVII.">Primos de Mersenne</span></h4>
+                        <p>Tienen la forma 2ⁿ - 1. Prueba: <strong>31, 127, 8191</strong></p>
+                    </div>
+                    <div class="fact-card">
+                        <h4>👯 <span class="term" data-def="Par de primos que difieren exactamente en 2. Ejemplo: (11, 13), (17, 19), (41, 43).">Primos gemelos</span></h4>
+                        <p>Difieren en 2. Prueba: <strong>11 y 13</strong>, <strong>41 y 43</strong></p>
+                    </div>
+                    <div class="fact-card">
+                        <h4>🔄 Primos palíndromos</h4>
+                        <p>Se leen igual al revés: <strong>131, 757, 12421</strong></p>
+                    </div>
+                    <div class="fact-card">
+                        <h4>🏆 Récords</h4>
+                        <p>El primo #1000 es <strong>7919</strong>. El #10000 es <strong>104729</strong></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== HISTORIA ==================== -->
+        <section id="history" class="section">
+            <div class="card">
+                <h2><span class="icon">📜</span> Un viaje de 2,300 años</h2>
+                <p>Los números primos han fascinado a la humanidad desde la antigua Grecia:</p>
+            </div>
+
+            <div class="card">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">~300 a.C.</div>
+                        <div class="timeline-title">Euclides demuestra que hay infinitos primos</div>
+                        <div class="timeline-desc">En su obra "Elementos", el matemático griego presentó una <span class="term" data-def="Tipo de demostración que asume lo contrario de lo que se quiere probar y llega a una contradicción, probando así que la suposición era falsa.">prueba por contradicción</span> muy elegante que sigue enseñándose hoy.</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">~240 a.C.</div>
+                        <div class="timeline-title">Eratóstenes inventa su famosa "Criba"</div>
+                        <div class="timeline-desc">El bibliotecario de Alejandría creó un algoritmo sistemático para encontrar primos que, 2,200 años después, sigue siendo eficiente.</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">1640</div>
+                        <div class="timeline-title">Fermat revoluciona el estudio de los primos</div>
+                        <div class="timeline-desc">Pierre de Fermat descubrió el "Pequeño Teorema de Fermat", fundamental para la <span class="term" data-def="Ciencia de proteger información mediante códigos secretos. Viene del griego 'kryptós' (oculto) y 'graphein' (escribir).">criptografía</span> moderna.</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">1859</div>
+                        <div class="timeline-title">Riemann plantea su hipótesis</div>
+                        <div class="timeline-desc">Bernhard Riemann conectó la distribución de los primos con el <span class="term" data-def="Rama de las matemáticas que estudia funciones con números complejos (números con parte real e imaginaria).">análisis complejo</span>. Su hipótesis sigue sin demostrarse y tiene un premio de $1 millón.</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">1977</div>
+                        <div class="timeline-title">RSA: los primos protegen internet</div>
+                        <div class="timeline-desc">Rivest, Shamir y Adleman crean el sistema RSA, que usa la dificultad de <span class="term" data-def="Proceso de encontrar los números primos que, multiplicados entre sí, dan un número compuesto. Es fácil para números pequeños pero extremadamente difícil para números grandes.">factorizar</span> números grandes para cifrar información.</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">2024</div>
+                        <div class="timeline-title">Nuevo récord: primo de 41 millones de dígitos</div>
+                        <div class="timeline-desc">El proyecto GIMPS encontró el primo más grande conocido: 2¹³⁶'²⁷⁹'⁸⁴¹ - 1. Si lo imprimieras, necesitarías más de 10,000 páginas.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== CRIPTOGRAFÍA (CON EJERCICIO) ==================== -->
+        <section id="crypto" class="section">
+            <div class="card featured">
+                <h2><span class="icon">🔐</span> Los primos protegen tu vida digital</h2>
+                <p>
+                    Cada vez que compras en internet, envías un mensaje por WhatsApp o accedes a tu banco, los <span class="highlight">números primos están trabajando para protegerte</span>.
+                </p>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">🧩</span> El problema de la factorización</h2>
+                <p>
+                    Multiplicar es fácil, incluso con números enormes. Pero el proceso inverso (<span class="term" data-def="Descomponer un número en los primos que lo forman. Ejemplo: 15 = 3 × 5">factorizar</span>) es extremadamente difícil:
+                </p>
+                <div class="math-box">
+                    <div class="equation" style="color: var(--success);">61 × 53 = 3,233 <span style="font-size: 0.7rem; opacity: 0.7;">✓ Fácil</span></div>
+                    <div class="equation" style="color: var(--danger); margin-top: 1rem;">3,233 = ? × ? <span style="font-size: 0.7rem; opacity: 0.7;">✗ Difícil</span></div>
+                    <div class="caption">Con primos de 300+ dígitos, ni las supercomputadoras pueden factorizar</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">🔑</span> Clave pública y clave privada</h2>
+                <p>El sistema RSA usa dos "llaves" matemáticamente relacionadas:</p>
+                
+                <div class="crypto-visual">
+                    <div class="key-box public">
+                        <div class="key-icon">🔓</div>
+                        <div class="key-label">Clave Pública</div>
+                        <p class="key-desc">Todos pueden verla.<br>Sirve para <strong><span class="term" data-def="Convertir un mensaje legible en un código secreto que solo puede leer quien tenga la clave correcta.">cifrar</span></strong>.</p>
+                    </div>
+                    <div class="key-box private">
+                        <div class="key-icon">🔒</div>
+                        <div class="key-label">Clave Privada</div>
+                        <p class="key-desc">Solo tú la tienes.<br>Sirve para <strong><span class="term" data-def="Convertir un mensaje cifrado de vuelta a su forma original legible.">descifrar</span></strong>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EJERCICIO INTERACTIVO RSA (SIMPLIFICADO) -->
+            <div class="card">
+                <div class="rsa-exercise">
+                    <h3>🧪 Ejercicio: Prueba el cifrado RSA</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        Vamos a ver cómo funciona el cifrado con un ejemplo sencillo. En la vida real se usan números enormes, pero el principio es el mismo.
+                    </p>
+
+                    <div class="rsa-step">
+                        <h4>Paso 1: Los primos secretos</h4>
+                        <p>Imagina que estos dos primos son tu "contraseña secreta". Nadie más los conoce.</p>
+                        <div class="rsa-inputs">
+                            <div class="rsa-input-group">
+                                <label>Primo p:</label>
+                                <select id="rsaP">
+                                    <option value="3">3</option>
+                                    <option value="5">5</option>
+                                    <option value="7" selected>7</option>
+                                    <option value="11">11</option>
+                                    <option value="13">13</option>
+                                </select>
+                            </div>
+                            <div class="rsa-input-group">
+                                <label>Primo q:</label>
+                                <select id="rsaQ">
+                                    <option value="11" selected>11</option>
+                                    <option value="13">13</option>
+                                    <option value="17">17</option>
+                                    <option value="19">19</option>
+                                    <option value="23">23</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary btn-small" onclick="calculateRSA()">Generar claves</button>
+                        </div>
+                    </div>
+
+                    <div class="rsa-step">
+                        <h4>Paso 2: Las claves generadas</h4>
+                        <p>A partir de los primos se calculan las claves. Lo importante es entender que:</p>
+                        <div class="rsa-simple-keys">
+                            <div class="simple-key public">
+                                <div class="simple-key-icon">🔓</div>
+                                <div class="simple-key-content">
+                                    <strong>Clave pública</strong>
+                                    <span>n = <span id="rsaN">77</span></span>
+                                    <small>Todos pueden verla</small>
+                                </div>
+                            </div>
+                            <div class="simple-key private">
+                                <div class="simple-key-icon">🔒</div>
+                                <div class="simple-key-content">
+                                    <strong>Clave privada</strong>
+                                    <span>Derivada de p × q</span>
+                                    <small>Solo tú la conoces</small>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; margin-top: 1rem;">
+                            💡 <strong>La magia:</strong> Aunque todos ven que n = <span id="rsaN2">77</span>, nadie puede saber que viene de <span id="rsaPQ">7 × 11</span> (con números grandes, esto es prácticamente imposible de descubrir).
+                        </p>
+                    </div>
+
+                    <div class="rsa-step">
+                        <h4>Paso 3: ¡Pruébalo!</h4>
+                        <p>Escribe un número como "mensaje secreto" y mira cómo se transforma:</p>
+                        <div class="rsa-inputs">
+                            <div class="rsa-input-group">
+                                <label>Tu mensaje (número):</label>
+                                <input type="number" id="rsaMessage" value="42" min="2" max="76">
+                            </div>
+                            <button class="btn btn-primary btn-small" onclick="encryptMessage()">🔐 Cifrar</button>
+                        </div>
+                        
+                        <div class="rsa-message-demo" id="rsaDemo" style="display: none;">
+                            <div class="rsa-message-box original">
+                                <div class="msg-label">Tu mensaje</div>
+                                <div class="msg-value" id="msgOriginal">42</div>
+                            </div>
+                            <div class="rsa-arrow">🔒→</div>
+                            <div class="rsa-message-box encrypted">
+                                <div class="msg-label">Cifrado</div>
+                                <div class="msg-value" id="msgEncrypted">?</div>
+                            </div>
+                            <div class="rsa-arrow">🔑→</div>
+                            <div class="rsa-message-box decrypted">
+                                <div class="msg-label">Descifrado</div>
+                                <div class="msg-value" id="msgDecrypted">?</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analogy-box" id="rsaExplanation" style="display: none;">
+                        <h4>💡 ¿Qué acaba de pasar?</h4>
+                        <p id="rsaExplanationText"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><span class="icon">🎯</span> Lo esencial de la criptografía</h2>
+                <div class="analogy-box">
+                    <h4>📬 Piénsalo como un buzón</h4>
+                    <p>
+                        <strong>La clave pública es como la ranura de un buzón:</strong> cualquiera puede meter una carta (cifrar un mensaje).<br><br>
+                        <strong>La clave privada es la llave del buzón:</strong> solo tú puedes abrirlo y leer las cartas (descifrar).<br><br>
+                        Los números primos hacen posible crear estos "buzones matemáticos" que son imposibles de abrir sin la llave correcta.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Quiz CTA -->
+            <div class="quiz-cta">
+                <h3>🎯 ¿Cuánto has aprendido?</h3>
+                <p>Pon a prueba tus conocimientos sobre números primos con nuestro quiz de 10 preguntas.</p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfdmnFDbzfRXwoUV5CZN6oLHwI_H4rQblLx22-UnnmtZGJNhQ/viewform" target="_blank" class="btn btn-primary">
+                    📝 Hacer el Quiz
+                </a>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">🌐</span> ¿Dónde se usa esto hoy?</h2>
+                <div class="app-grid">
+                    <div class="app-card">
+                        <h4>🛒 Compras en línea</h4>
+                        <p>El candado 🔒 en tu navegador indica que RSA protege tu tarjeta de crédito.</p>
+                    </div>
+                    <div class="app-card">
+                        <h4>💬 WhatsApp y Signal</h4>
+                        <p>El "cifrado de extremo a extremo" usa matemáticas basadas en primos para que solo tú y tu contacto lean los mensajes.</p>
+                    </div>
+                    <div class="app-card">
+                        <h4>🏦 Banca en línea</h4>
+                        <p>Tu banco verifica tu identidad usando criptografía de clave pública.</p>
+                    </div>
+                    <div class="app-card">
+                        <h4>📧 Correo electrónico</h4>
+                        <p>Las firmas digitales verifican que un email es auténtico.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== GLOSARIO ==================== -->
+        <section id="glossary" class="section">
+            <div class="card">
+                <h2><span class="icon">📖</span> Glosario de términos</h2>
+                <p>Aquí encontrarás las definiciones de los conceptos matemáticos mencionados en el sitio. También puedes pasar el cursor sobre las palabras <span class="term" data-def="¡Así es! Las palabras subrayadas en cyan tienen definiciones emergentes.">subrayadas en cyan</span> en cualquier sección.</p>
+            </div>
+
+            <div class="card">
+                <div class="glossary-grid">
+                    <div class="glossary-item">
+                        <h4>Número primo</h4>
+                        <p>Número natural mayor que 1 que solo es divisible entre 1 y sí mismo. Ejemplos: 2, 3, 5, 7, 11, 13...</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Número compuesto</h4>
+                        <p>Número natural mayor que 1 que tiene más de dos divisores. Ejemplos: 4, 6, 8, 9, 10, 12...</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Factorización prima</h4>
+                        <p>Expresar un número como producto de primos. Por ejemplo: 60 = 2² × 3 × 5. Es única para cada número.</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Divisibilidad</h4>
+                        <p>Un número es divisible entre otro cuando la división es exacta (residuo cero). Ej: 12 es divisible entre 3.</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Múltiplo</h4>
+                        <p>Resultado de multiplicar un número por un entero. Los múltiplos de 5 son: 5, 10, 15, 20, 25...</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Algoritmo</h4>
+                        <p>Conjunto ordenado de pasos para resolver un problema. La Criba de Eratóstenes es un algoritmo para encontrar primos.</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Criptografía</h4>
+                        <p>Ciencia de proteger información mediante códigos secretos. Del griego "kryptós" (oculto) y "graphein" (escribir).</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>RSA</h4>
+                        <p>Sistema de cifrado creado por Rivest, Shamir y Adleman en 1977. Usa la dificultad de factorizar números grandes.</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Clave pública</h4>
+                        <p>En criptografía asimétrica, la clave que se comparte públicamente. Sirve para cifrar mensajes.</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Clave privada</h4>
+                        <p>Clave secreta que solo conoce el dueño. Sirve para descifrar mensajes cifrados con la clave pública correspondiente.</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Cifrar / Encriptar</h4>
+                        <p>Convertir información legible en un código secreto que solo puede leer quien tenga la clave correcta.</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Descifrar / Desencriptar</h4>
+                        <p>Proceso inverso al cifrado: convertir un mensaje codificado de vuelta a su forma original.</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Primos de Mersenne</h4>
+                        <p>Primos de la forma 2ⁿ - 1. Ejemplos: 3, 7, 31, 127. Los primos más grandes conocidos son de este tipo.</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Primos gemelos</h4>
+                        <p>Par de primos que difieren en exactamente 2. Ejemplos: (3,5), (11,13), (17,19), (41,43).</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Hipótesis de Riemann</h4>
+                        <p>Conjetura sobre la distribución de los primos, planteada en 1859. Uno de los problemas matemáticos más importantes sin resolver.</p>
+                    </div>
+                    <div class="glossary-item">
+                        <h4>Polinomio cuadrático</h4>
+                        <p>Expresión de la forma ax² + bx + c. Algunos generan muchos primos, como n² + n + 41 de Euler.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="logo-small">🔢</div>
+            <p><strong>Números Primos: Los Átomos de las Matemáticas</strong></p>
+            <p>Proyecto de Divulgación Matemática</p>
+            <p style="margin-top: 1rem; opacity: 0.7;">Licenciatura en Enseñanza y Aprendizaje de las Matemáticas</p>
+        </footer>
+    </div>
+
+    <script>
+        // ==================== TAB NAVIGATION ====================
+        const tabs = document.querySelectorAll('.tab');
+        const sections = document.querySelectorAll('.section');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.section;
+                tabs.forEach(t => t.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(target).classList.add('active');
+                
+                // FIX: Redraw Ulam spiral when its tab becomes visible
+                if (target === 'ulam') {
+                    setTimeout(() => {
+                        renderUlamSpiral(currentUlamSize);
+                    }, 50);
+                }
+                
+                window.scrollTo({ top: 200, behavior: 'smooth' });
+            });
+        });
+
+        // ==================== SIEVE OF ERATOSTHENES ====================
+        const sieveGrid = document.getElementById('sieveGrid');
+        const startBtn = document.getElementById('startSieve');
+        const resetBtn = document.getElementById('resetSieve');
+        const speedSlider = document.getElementById('speed');
+        const statusDiv = document.getElementById('sieveStatus');
+
+        let sieveRunning = false;
+        let sieveNumbers = [];
+
+        function initSieve() {
+            sieveGrid.innerHTML = '';
+            sieveNumbers = [];
+            
+            for (let i = 1; i <= 100; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'sieve-cell';
+                cell.textContent = i;
+                cell.dataset.number = i;
+                sieveGrid.appendChild(cell);
+                sieveNumbers.push({
+                    element: cell,
+                    number: i,
+                    isPrime: i > 1,
+                    marked: false
+                });
+            }
+            
+            sieveNumbers[0].isPrime = false;
+            sieveNumbers[0].element.classList.add('composite');
+            statusDiv.innerHTML = 'Presiona <strong>"Iniciar animación"</strong> para comenzar';
+            startBtn.disabled = false;
+            startBtn.innerHTML = '▶️ Iniciar animación';
+        }
+
+        async function runSieve() {
+            if (sieveRunning) return;
+            sieveRunning = true;
+            startBtn.disabled = true;
+            startBtn.innerHTML = '⏳ Ejecutando...';
+            
+            const getDelay = () => 550 - speedSlider.value;
+
+            for (let i = 2; i <= 10; i++) {
+                if (!sieveNumbers[i - 1].isPrime) continue;
+                
+                sieveNumbers[i - 1].element.classList.add('current-prime');
+                statusDiv.innerHTML = `Encontrado primo: <span style="color: var(--accent-purple); font-weight: bold;">${i}</span>`;
+                await sleep(getDelay() * 2);
+                
+                for (let j = i * 2; j <= 100; j += i) {
+                    if (sieveNumbers[j - 1].marked) continue;
+                    
+                    sieveNumbers[j - 1].element.classList.add('marking');
+                    statusDiv.innerHTML = `Tachando <span style="color: var(--danger); font-weight: bold;">${j}</span> = ${i} × ${j/i}`;
+                    await sleep(getDelay());
+                    
+                    sieveNumbers[j - 1].element.classList.remove('marking');
+                    sieveNumbers[j - 1].element.classList.add('composite');
+                    sieveNumbers[j - 1].isPrime = false;
+                    sieveNumbers[j - 1].marked = true;
+                }
+                
+                sieveNumbers[i - 1].element.classList.remove('current-prime');
+                sieveNumbers[i - 1].element.classList.add('prime');
+            }
+            
+            statusDiv.innerHTML = `✨ Marcando primos restantes...`;
+            for (let i = 11; i <= 100; i++) {
+                if (sieveNumbers[i - 1].isPrime && !sieveNumbers[i - 1].element.classList.contains('prime')) {
+                    sieveNumbers[i - 1].element.classList.add('prime');
+                    await sleep(40);
+                }
+            }
+            
+            const primeCount = sieveNumbers.filter(n => n.isPrime).length;
+            statusDiv.innerHTML = `🎉 ¡Listo! <span style="color: var(--prime-gold); font-weight: bold;">${primeCount} primos</span> encontrados`;
+            
+            sieveRunning = false;
+            startBtn.disabled = false;
+            startBtn.innerHTML = '▶️ Repetir';
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (!sieveRunning) {
+                initSieve();
+                setTimeout(runSieve, 100);
+            }
+        });
+        resetBtn.addEventListener('click', initSieve);
+        initSieve();
+
+        // ==================== ULAM SPIRAL (PIXEL-PERFECT SOLUTION) ====================
+        const ulamCanvas = document.getElementById('ulamCanvas');
+        const ulamCtx = ulamCanvas.getContext('2d');
+        const ulamInfo = document.getElementById('ulamInfo');
+        const ulamButtons = document.querySelectorAll('.ulam-btn');
+        let currentUlamSize = 41;
+
+        function isPrime(n) {
+            if (n < 2) return false;
+            if (n === 2) return true;
+            if (n % 2 === 0) return false;
+            for (let i = 3; i <= Math.sqrt(n); i += 2) {
+                if (n % i === 0) return false;
+            }
+            return true;
+        }
+
+        function renderUlamSpiral(size) {
+            currentUlamSize = size;
+            
+            // Update button states
+            ulamButtons.forEach(btn => {
+                btn.classList.remove('active', 'btn-primary');
+                btn.classList.add('btn-secondary');
+                if (parseInt(btn.dataset.size) === size) {
+                    btn.classList.add('active', 'btn-primary');
+                    btn.classList.remove('btn-secondary');
+                }
+            });
+            
+            // PIXEL-PERFECT: Canvas size = spiral size (1 pixel per number)
+            ulamCanvas.width = size;
+            ulamCanvas.height = size;
+            
+            // Clear with background color
+            ulamCtx.fillStyle = '#1a1a25';
+            ulamCtx.fillRect(0, 0, size, size);
+            
+            // Spiral logic
+            let x = Math.floor(size / 2);
+            let y = Math.floor(size / 2);
+            let num = 1;
+            let step = 1;
+            let primeCount = 0;
+            
+            // Draw center (1 is not prime)
+            ulamCtx.fillStyle = '#1a1a25';
+            ulamCtx.fillRect(x, y, 1, 1);
+            num++;
+            
+            const directions = [[1, 0], [0, -1], [-1, 0], [0, 1]]; // right, up, left, down
+            let dirIndex = 0;
+            
+            while (num <= size * size) {
+                for (let side = 0; side < 2 && num <= size * size; side++) {
+                    const [dx, dy] = directions[dirIndex % 4];
+                    
+                    for (let i = 0; i < step && num <= size * size; i++) {
+                        x += dx;
+                        y += dy;
+                        
+                        if (x >= 0 && x < size && y >= 0 && y < size) {
+                            if (isPrime(num)) {
+                                ulamCtx.fillStyle = '#ffd700'; // Gold for primes
+                                primeCount++;
+                            } else {
+                                ulamCtx.fillStyle = '#1a1a25'; // Dark for composites
+                            }
+                            ulamCtx.fillRect(x, y, 1, 1);
+                        }
+                        num++;
+                    }
+                    dirIndex++;
+                }
+                step++;
+            }
+            
+            const percentage = ((primeCount / (size * size)) * 100).toFixed(1);
+            ulamInfo.innerHTML = `Espiral de <strong>${size}×${size}</strong> = ${(size*size).toLocaleString()} números<br>
+                <span style="color: var(--prime-gold);">${primeCount.toLocaleString()} primos</span> (${percentage}%) — 
+                <em>¡Observa las diagonales!</em>`;
+        }
+
+        // Button click handlers
+        ulamButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                renderUlamSpiral(parseInt(btn.dataset.size));
+            });
+        });
+
+        // ==================== PRIME CHECKER (IMPROVED) ====================
+        const numberInput = document.getElementById('numberInput');
+        const checkBtn = document.getElementById('checkPrime');
+        const resultDisplay = document.getElementById('resultDisplay');
+        const resultNumber = document.getElementById('resultNumber');
+        const resultText = document.getElementById('resultText');
+        const resultExplanation = document.getElementById('resultExplanation');
+
+        function findSmallestDivisor(n) {
+            if (n % 2 === 0) return 2;
+            for (let i = 3; i <= Math.sqrt(n); i += 2) {
+                if (n % i === 0) return i;
+            }
+            return n;
+        }
+
+        // Factorization with exponents
+        function factorizeWithExponents(n) {
+            const factors = {};
+            let temp = n;
+            let d = 2;
+            
+            while (d * d <= temp) {
+                while (temp % d === 0) {
+                    factors[d] = (factors[d] || 0) + 1;
+                    temp = temp / d;
+                }
+                d++;
+            }
+            if (temp > 1) {
+                factors[temp] = (factors[temp] || 0) + 1;
+            }
+            
+            // Format with superscripts
+            const parts = [];
+            for (const [prime, exp] of Object.entries(factors)) {
+                if (exp === 1) {
+                    parts.push(prime);
+                } else {
+                    parts.push(`${prime}<sup>${exp}</sup>`);
+                }
+            }
+            return parts.join(' × ');
+        }
+
+        function checkNumber() {
+            const num = parseInt(numberInput.value);
+            
+            if (isNaN(num) || num < 1) {
+                resultDisplay.className = 'result-display';
+                resultNumber.textContent = '?';
+                resultText.textContent = 'Ingresa un número válido mayor a 0';
+                resultExplanation.innerHTML = '';
+                return;
+            }
+
+            if (num > 999999999999999) {
+                resultDisplay.className = 'result-display';
+                resultNumber.textContent = '🤯';
+                resultText.textContent = '¡Número demasiado grande!';
+                resultExplanation.innerHTML = 'Prueba con un número más pequeño para ver la factorización.';
+                return;
+            }
+
+            resultNumber.textContent = num.toLocaleString();
+            
+            if (num === 1) {
+                resultDisplay.className = 'result-display not-prime';
+                resultText.textContent = 'NO es primo (ni compuesto)';
+                resultExplanation.innerHTML = 'El <strong>1</strong> no se considera primo ni compuesto. Los primos deben tener exactamente 2 divisores distintos.';
+            } else if (num === 2) {
+                resultDisplay.className = 'result-display is-prime';
+                resultText.textContent = '¡Es PRIMO! ✨';
+                resultExplanation.innerHTML = '<strong>2</strong> es el único número primo par y el primo más pequeño.';
+            } else if (isPrime(num)) {
+                resultDisplay.className = 'result-display is-prime';
+                resultText.textContent = '¡Es PRIMO! ✨';
+                
+                let special = '';
+                const numStr = num.toString();
+                if (numStr === numStr.split('').reverse().join('')) {
+                    special = '<br><br>🔄 ¡Es un <strong>primo palíndromo</strong>!';
+                }
+                
+                const log2 = Math.log2(num + 1);
+                if (Number.isInteger(log2) && log2 > 1) {
+                    special = `<br><br>✨ Es un <strong>primo de Mersenne</strong> (2<sup>${log2}</sup> - 1)`;
+                }
+                
+                resultExplanation.innerHTML = `<strong>${num.toLocaleString()}</strong> solo es divisible entre 1 y sí mismo.${special}`;
+            } else {
+                resultDisplay.className = 'result-display not-prime';
+                resultText.textContent = 'NO es primo';
+                
+                const divisor = findSmallestDivisor(num);
+                const quotient = num / divisor;
+                
+                // Always show factorization (removed the 1 million limit)
+                const factorization = factorizeWithExponents(num);
+                
+                resultExplanation.innerHTML = `<strong>${num.toLocaleString()}</strong> = ${divisor.toLocaleString()} × ${quotient.toLocaleString()}<br><br>
+                    Es un <strong>número compuesto</strong>.<br>
+                    <div class="factorization">Factorización: ${factorization}</div>`;
+            }
+        }
+
+        checkBtn.addEventListener('click', checkNumber);
+        numberInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkNumber();
+        });
+
+        // ==================== RSA EXERCISE (SIMPLIFIED) ====================
+        let rsaParams = { p: 7, q: 11, n: 77, e: 7, d: 43 };
+
+        function gcd(a, b) {
+            while (b !== 0) {
+                [a, b] = [b, a % b];
+            }
+            return a;
+        }
+
+        function modPow(base, exp, mod) {
+            let result = 1n;
+            base = BigInt(base) % BigInt(mod);
+            exp = BigInt(exp);
+            mod = BigInt(mod);
+            
+            while (exp > 0n) {
+                if (exp % 2n === 1n) {
+                    result = (result * base) % mod;
+                }
+                exp = exp / 2n;
+                base = (base * base) % mod;
+            }
+            return Number(result);
+        }
+
+        function modInverse(e, phi) {
+            let [old_r, r] = [phi, e];
+            let [old_t, t] = [0, 1];
+            
+            while (r !== 0) {
+                const quotient = Math.floor(old_r / r);
+                [old_r, r] = [r, old_r - quotient * r];
+                [old_t, t] = [t, old_t - quotient * t];
+            }
+            
+            if (old_t < 0) old_t += phi;
+            return old_t;
+        }
+
+        function calculateRSA() {
+            const p = parseInt(document.getElementById('rsaP').value);
+            const q = parseInt(document.getElementById('rsaQ').value);
+            
+            if (p === q) {
+                alert('Por favor elige dos primos diferentes');
+                return;
+            }
+            
+            const n = p * q;
+            const phi = (p - 1) * (q - 1);
+            
+            let e = 3;
+            while (gcd(e, phi) !== 1) {
+                e += 2;
+            }
+            
+            const d = modInverse(e, phi);
+            
+            rsaParams = { p, q, n, phi, e, d };
+            
+            // Update simplified display
+            document.getElementById('rsaN').textContent = n;
+            document.getElementById('rsaN2').textContent = n;
+            document.getElementById('rsaPQ').textContent = `${p} × ${q}`;
+            document.getElementById('rsaMessage').max = n - 1;
+            
+            // Reset demo
+            document.getElementById('rsaDemo').style.display = 'none';
+            document.getElementById('rsaExplanation').style.display = 'none';
+        }
+
+        function encryptMessage() {
+            const m = parseInt(document.getElementById('rsaMessage').value);
+            const { n, e, d, p, q } = rsaParams;
+            
+            if (m < 2 || m >= n) {
+                alert(`El mensaje debe ser un número entre 2 y ${n - 1}`);
+                return;
+            }
+            
+            const encrypted = modPow(m, e, n);
+            const decrypted = modPow(encrypted, d, n);
+            
+            document.getElementById('msgOriginal').textContent = m;
+            document.getElementById('msgEncrypted').textContent = encrypted;
+            document.getElementById('msgDecrypted').textContent = decrypted;
+            
+            document.getElementById('rsaDemo').style.display = 'flex';
+            document.getElementById('rsaExplanation').style.display = 'block';
+            
+            document.getElementById('rsaExplanationText').innerHTML = `
+                Tu mensaje <strong>${m}</strong> se transformó en <strong style="color: var(--danger);">${encrypted}</strong> usando la clave pública.<br><br>
+                Sin conocer los primos secretos (${p} y ${q}), nadie puede revertir esta transformación.<br><br>
+                Pero con la clave privada, el <strong style="color: var(--danger);">${encrypted}</strong> se convierte de nuevo en <strong style="color: var(--accent-cyan);">${decrypted}</strong>. ¡Magia matemática! ✨
+            `;
+        }
+
+        // Initialize RSA
+        calculateRSA();
+    </script>
+</body>
+</html>
